@@ -1,0 +1,21 @@
+{
+  "name": "slack-ops-bot",
+  "version": "1.0.0",
+  "description": "> 팀의 반복적인 근태 확인과 진척 보고를 슬랙 봇 2종으로 자동화한다. > 포트폴리오 겸 학습용 프로젝트이며, **기획 → 구조 설계 → 개발 → 코드 리뷰 → QA → 배포**의 > 실무 사이클을 한 바퀴 도는 것이 목적이다.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^26.5.1",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  }
+}

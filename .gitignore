@@ -1,0 +1,12 @@
+# 의존성·빌드 결과물 — package.json/lock 파일로 언제든 재생성 가능
+node_modules/
+dist/
+
+# 비밀값 (Slack 토큰, Google 키, Anthropic 키). 절대 커밋 금지
+.env
+
+# 개인 학습용 코드 — 프로젝트 산출물이 아님
+learn/
+
+# IDE 개인 설정 — 사람마다 다름
+.idea/
