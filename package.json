@@ -7,6 +7,10 @@
     "doc": "docs"
   },
   "scripts": {
+    "dev": "node --env-file=.env --import tsx src/bot/app.ts",
+    "build": "tsc",
+    "start": "node --env-file=.env dist/bot/app.js",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,5 +21,8 @@
     "@types/node": "^26.5.1",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@slack/bolt": "^5.1.0"
   }
 }
