@@ -1,5 +1,7 @@
 # Slack Ops Bot — 슬랙 근태·업무 자동화 봇
 
+**한국어** | [日本語](README.ja.md)
+
 > 팀의 반복적인 근태 확인과 진척 보고를 슬랙 봇 2종으로 자동화한다.
 > 포트폴리오 겸 학습용 프로젝트이며, **기획 → 구조 설계 → 개발 → 코드 리뷰 → QA → 배포**의
 > 실무 사이클을 한 바퀴 도는 것이 목적이다.
@@ -37,6 +39,21 @@
 
 **두 봇 모두 P0만 끝나도 완성된 프로젝트다.**
 
+## 현재 진행 상황
+
+개발 중인 프로젝트다. 지금까지 실제로 동작하는 범위는 아래와 같다.
+
+| 상태 | 항목 |
+|---|---|
+| ✅ | 기획·구조 설계 문서 (요구사항, 아키텍처, ADR, QA 전략) |
+| ✅ | Slack 앱 구성 (Socket Mode, 매니페스트를 저장소에 코드로 관리) |
+| ✅ | Bolt 앱 기동 + 환경 변수 검증(fail fast) + `/report` 커맨드 응답 |
+| 🚧 | A봇 — Google Sheets 연동, 근무 대상자 필터링, 멘션 발송, 스케줄링 |
+| 🚧 | B봇 — 보고 수집 모달, Claude 요약, 실패 시 원문 폴백 |
+| 🚧 | 테스트, CI, 배포 |
+
+기능 목록을 "예정"이 아니라 **실제 동작 여부로** 구분해 적는다.
+
 ## 기술 스택
 
 | 영역 | 기술 |
@@ -53,17 +70,40 @@
 기술 선택 근거는 [DECISIONS.md](docs/DECISIONS.md) 참고 (구 도메인 ADR이 섞여 있으니
 새 ADR이 추가되기 전까지는 주의해서 읽는다).
 
+### 설계상의 판단 예
+
+- **Socket Mode 채택** — 공개 URL 없이 Slack과 통신할 수 있어, 로컬 개발과 배포 후가
+  같은 구성으로 동작한다.
+- **DB를 두지 않는다** — Google Sheets를 유일한 source of truth로 삼는다.
+  입력 UI 역할까지 겸하고 있어, 이 규모에서 저장소를 하나 더 두는 이점이 작다.
+- **요약에 실패해도 보고는 반드시 전달한다** — Claude API가 타임아웃이나 레이트리밋으로
+  실패하면 정리된 원문을 그대로 보낸다. 자동화 때문에 정보가 사라져서는 안 된다는 방침이다.
+- **기동 시점에 환경 변수를 검증하고 즉시 종료한다(fail fast)** — 실제 API 호출 시점에
+  `undefined`가 드러나면 원인 추적이 훨씬 어려워진다.
+
 ## 실행
 
 ```powershell
-git clone <repo-url>
+git clone https://github.com/Nu-gu-nya/slack-ops-bot.git
 cd slack-ops-bot
-Copy-Item .env.example .env   # Slack/Sheets/Claude 자격 증명 채워넣기
 npm install
+Copy-Item .env.example .env   # 발급받은 토큰을 채워넣는다
 npm run dev
 ```
 
-필요한 환경 변수(슬랙 토큰, 구글 서비스 계정, Claude API 키 등)의 구체 목록은
+`⚡ Ops Bot 실행 중 (Socket Mode)`이 출력되면 봇이 초대된 채널에서 `/report`로 확인할 수 있다.
+
+Slack 앱은 [`slack-app-manifest.yml`](slack-app-manifest.yml)을 https://api.slack.com/apps 의
+**Create New App → From a manifest**에 붙여넣어 생성한다. 필요한 스코프와 이벤트 구독이
+파일에 그대로 들어 있다.
+
+| 명령어 | 용도 |
+|---|---|
+| `npm run dev` | 개발 실행 (`.env`를 읽어 Socket Mode로 접속) |
+| `npm run typecheck` | 타입 검사 |
+| `npm run build && npm start` | 프로덕션 빌드 후 실행 |
+
+환경 변수는 `.env.example` 참고. 각 값의 의미는
 [ARCHITECTURE.md](docs/ARCHITECTURE.md)에서 정리한다.
 
 ## 문서
@@ -80,12 +120,12 @@ npm run dev
 | 5 | [DEPLOY.md](docs/DEPLOY.md) | CI/CD, 배포, 알림 |
 | — | [TEAM.md](docs/TEAM.md) | 혼자서 팀 프로세스 굴리는 법 |
 | — | [DECISIONS.md](docs/DECISIONS.md) | 기술 선택 기록 (면접 대비) |
+| — | [JOURNAL.md](docs/JOURNAL.md) | 개발 저널 — 막힌 것과 배운 것의 기록 |
 
 > 이 프로젝트엔 웹 화면이 없다. [UIUX.md](docs/UIUX.md)는 "화면 UX" 대신
 > "봇 메시지·대화 UX" 원칙을 다룬다.
 
 ## 일정
 
-국내 이력서 마감(1주 이내)에는 이 프로젝트를 맞추지 않는다.
-해외 지원 마감(이번 달 말)을 기준으로 MVP(P0)까지 완성하는 걸 목표로 한다.
-자세한 일정은 [ROADMAP.md](docs/ROADMAP.md) 참고.
+MVP(P0) 완성을 목표로 진행 중이다. 일별 목표와 범위 조정 기준은
+[ROADMAP.md](docs/ROADMAP.md)에 정리되어 있다.
