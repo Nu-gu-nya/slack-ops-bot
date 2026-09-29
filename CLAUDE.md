@@ -17,7 +17,7 @@ Claude Code가 이 저장소에서 작업할 때 자동으로 읽는 파일이�
 
 | 상황 | 문서 |
 |---|---|
-| **작업을 새로 시작할 때 (항상 먼저)** | **`learn/HANDOVER.md`** (git 추적 제외) |
+| **작업을 새로 시작할 때** | `learn/` 로컬 작업 메모 (저장소에 포함하지 않음) |
 | 오늘 뭘 할지 모를 때 | `docs/ROADMAP.md` |
 | 기능 요구사항 확인 | `docs/PLANNING.md` |
 | 구조·API·도메인 모델 | `docs/ARCHITECTURE.md` |
