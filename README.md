@@ -3,8 +3,8 @@
 **한국어** | [日本語](README.ja.md)
 
 > 팀의 반복적인 근태 확인과 진척 보고를 슬랙 봇 2종으로 자동화한다.
-> 포트폴리오 겸 학습용 프로젝트이며, **기획 → 구조 설계 → 개발 → 코드 리뷰 → QA → 배포**의
-> 실무 사이클을 한 바퀴 도는 것이 목적이다.
+> **기획 → 구조 설계 → 개발 → 코드 리뷰 → QA → 배포**의 실무 사이클을
+> 문서와 함께 굴리는 것을 목표로 한 개인 프로젝트다.
 
 ## 왜 이 프로젝트인가
 
@@ -67,8 +67,7 @@
 | CI/CD | GitHub Actions |
 
 세부 구조와 각 봇의 실행 방식은 [ARCHITECTURE.md](docs/ARCHITECTURE.md)에서 다룬다.
-기술 선택 근거는 [DECISIONS.md](docs/DECISIONS.md) 참고 (구 도메인 ADR이 섞여 있으니
-새 ADR이 추가되기 전까지는 주의해서 읽는다).
+기술 선택 근거는 [DECISIONS.md](docs/DECISIONS.md)에 ADR로 기록한다.
 
 ### 설계상의 판단 예
 
@@ -119,8 +118,7 @@ Slack 앱은 [`slack-app-manifest.yml`](slack-app-manifest.yml)을 https://api.s
 | 4 | [QA.md](docs/QA.md) | 테스트 전략과 체크리스트 |
 | 5 | [DEPLOY.md](docs/DEPLOY.md) | CI/CD, 배포, 알림 |
 | — | [TEAM.md](docs/TEAM.md) | 혼자서 팀 프로세스 굴리는 법 |
-| — | [DECISIONS.md](docs/DECISIONS.md) | 기술 선택 기록 (면접 대비) |
-| — | [JOURNAL.md](docs/JOURNAL.md) | 개발 저널 — 막힌 것과 배운 것의 기록 |
+| — | [DECISIONS.md](docs/DECISIONS.md) | 기술 선택 기록 (ADR) |
 
 > 이 프로젝트엔 웹 화면이 없다. [UIUX.md](docs/UIUX.md)는 "화면 UX" 대신
 > "봇 메시지·대화 UX" 원칙을 다룬다.
