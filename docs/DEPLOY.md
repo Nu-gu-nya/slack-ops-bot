@@ -69,27 +69,23 @@ npm ci  →  lint  →  typecheck  →  test  →  build
 
 ---
 
-## CD — 자동 배포
+## CD — 자동 배포 (Railway, ADR-006)
 
-`.github/workflows/deploy.yml`
+별도 배포 워크플로를 두지 않고 Railway의 GitHub 연동을 쓴다. Railway가 `main`의 새 커밋을 감지하고,
+**CI가 통과한 뒤에만** 저장소의 `Dockerfile`로 이미지를 빌드해 교체한다.
 
-```yaml
-name: Deploy
+| Railway 설정 | 값 | 이유 |
+|---|---|---|
+| Source | GitHub 저장소, 브랜치 `main` | 머지가 곧 배포 |
+| Wait for CI | 켬 | CI가 실패한 커밋은 배포하지 않는다 |
+| Builder | Dockerfile | 로컬·CI와 같은 이미지 |
+| Replicas | **1** | 출근 확인 상태가 메모리에 있고 cron이 프로세스마다 돈다. 2개면 멘션이 두 번 나간다 |
+| Restart policy | On failure | 기동 시 환경 변수 검증 실패 등으로 죽으면 재시작 |
+| Networking | 공개 도메인 없음 | 인바운드 요청이 없다(Socket Mode) |
+| Variables | `.env.example`의 키 전부 | 값은 Railway 화면에서만 입력한다 |
 
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Railway
-        run: railway up --service bot
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-```
+> 로컬에서 `npm run dev`를 띄운 채로 배포본도 돌고 있으면, 두 프로세스가 같은 Slack 앱으로 연결돼
+> 이벤트가 나뉘고 08:50 알림도 두 번 나간다. 배포 후에는 로컬 실행을 테스트용 앱이나 짧은 확인에만 쓴다.
 
 **비밀값은 절대 코드에 넣지 않는다.** GitHub Settings → Secrets, Railway 환경 변수에 각각 저장한다.
 
