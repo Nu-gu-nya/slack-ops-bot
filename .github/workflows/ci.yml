@@ -31,3 +31,17 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+
+  # Catches a broken Dockerfile before a deploy does. The image is built, not pushed.
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build --tag slack-ops-bot:ci .
+      - name: Image contains the compiled entry point and no tests
+        run: |
+          docker run --rm --entrypoint sh slack-ops-bot:ci -c '
+            test -f dist/bot/app.js &&
+            ! find dist -name "*.spec.js" | grep -q . &&
+            test "$(whoami)" = node'

@@ -1,0 +1,12 @@
+# Keep secrets, local notes and build output out of the build context.
+.env
+.env.*
+!.env.example
+learn/
+node_modules/
+dist/
+.git/
+.github/
+.idea/
+docs/
+*.md

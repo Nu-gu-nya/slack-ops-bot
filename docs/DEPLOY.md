@@ -36,29 +36,19 @@
 
 ### Dockerfile (멀티스테이지)
 
-```dockerfile
-# 빌드 단계
-FROM node:22-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+설정은 저장소 루트의 [`Dockerfile`](../Dockerfile)에 있다.
 
-# 실행 단계 — 빌드 도구를 포함하지 않아 이미지가 작아진다
-FROM node:22-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY package*.json ./
-RUN npm ci --omit=dev
-COPY --from=builder /app/dist ./dist
-CMD ["node", "dist/bot/app.js"]
-```
+| 단계 | 하는 일 |
+|---|---|
+| `builder` | 전체 의존성 설치 → `tsconfig.build.json`으로 컴파일 (테스트 파일 제외) |
+| `runner` | 운영 의존성만 설치 → `dist/`만 복사 → 권한 없는 `node` 사용자로 `node dist/bot/app.js` 실행 |
 
-DB가 없으므로 `docker-compose.yml`은 필수가 아니다. 로컬 개발은 `npm run dev`로 충분하고,
-Docker는 배포 이미지 통일 용도로만 쓴다.
+- 멀티스테이지를 쓰는 이유는 빌드에만 필요한 의존성(TypeScript 등)을 최종 이미지에서 제외해 크기와 공격 표면을 줄이기 위해서다.
+- 포트를 열지 않는다. Socket Mode는 바깥으로 나가는 연결만 쓴다(ADR-002).
+- 설정은 `.env` 파일이 아니라 배포 플랫폼의 환경 변수로 주입한다. `.dockerignore`가 `.env`를 빌드 컨텍스트에서 막는다.
+- CI의 `docker` 잡이 PR마다 이미지를 빌드해, 컴파일된 진입점이 있는지·테스트 파일이 빠졌는지·`node` 사용자로 도는지를 확인한다.
 
-> 멀티스테이지를 쓰는 이유는 빌드에만 필요한 의존성을 최종 이미지에서 제외해 크기와 공격 표면을 줄이기 위해서다.
+DB가 없으므로 `docker-compose.yml`은 필요 없다. 로컬 개발은 `npm run dev`로 충분하다.
 
 ---
 
