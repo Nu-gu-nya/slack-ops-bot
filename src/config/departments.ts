@@ -9,7 +9,7 @@
  * is at the bottom of the "About" tab. The bot must be invited to each channel.
  */
 export const DEPARTMENT_CHANNELS: Readonly<Record<string, string>> = {
-  // '개발': 'C0123456789',
+  개발: 'C0C3JN00CRG',
 };
 
 /** Tab name and columns A–G (날짜, 부서, 이름, Slack 사용자 ID, 상태, 시작, 종료), skipping the header row. */
