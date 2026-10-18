@@ -15,6 +15,21 @@ export interface SheetsConfig {
   range: string;
 }
 
+/**
+ * Formatted cell values are strings, but numbers and booleans can appear depending
+ * on the render option. Anything else is not a cell value we understand, so it is
+ * treated as empty rather than turned into "[object Object]".
+ */
+function cellToString(value: unknown): string {
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+  return '';
+}
+
 export function createSheetsReader(config: SheetsConfig): AttendanceSheetReader {
   const jwt = new auth.JWT({
     email: config.serviceAccountEmail,
@@ -33,7 +48,7 @@ export function createSheetsReader(config: SheetsConfig): AttendanceSheetReader 
       // `values` is omitted entirely when the range is empty, and cells come back
       // as `any[][]`. Normalising here keeps loose types from leaking further in.
       const values: unknown[][] = response.data.values ?? [];
-      return values.map((row) => row.map((value) => (value === null || value === undefined ? '' : String(value))));
+      return values.map((row) => row.map(cellToString));
     },
   };
 }

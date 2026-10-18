@@ -33,7 +33,7 @@ export async function runAttendanceCheck(
   deps: AttendanceCheckDeps,
   today: string,
 ): Promise<AttendanceCheckResult> {
-  const { reader, messenger, checkins, departmentChannels } = deps;
+  const { reader, messenger, checkins } = deps;
   const result: AttendanceCheckResult = {
     announcedDepartments: [],
     failedDepartments: [],

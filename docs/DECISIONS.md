@@ -131,3 +131,26 @@
 
 작성 시점: 배포 단계 진입 시
 
+
+---
+
+## ADR-007: TypeScript 6.0 유지 (7.0 미채택)
+
+**상황**: 초기 설정 시 TypeScript 7.0이 설치되었다. ESLint로 `no-floating-promises` 같은 타입 기반 규칙(QA.md)을 걸려면
+typescript-eslint가 컴파일러의 JS API로 타입 정보를 읽어야 한다.
+
+**대안**
+- TypeScript 7.0 유지 + 타입 정보를 쓰지 않는 린트 규칙만 적용
+- TypeScript 7.0 유지 + 다른 린터 도입
+- TypeScript 6.0으로 고정 + typescript-eslint의 타입 기반 규칙 적용
+
+**결정**: TypeScript `~6.0`으로 고정한다.
+
+**이유**
+1. TypeScript 7.0(네이티브 구현)은 JS API를 제공하지 않아, typescript-eslint가 지원하지 않는다(지원 범위 `<6.1`)
+2. 이 프로젝트에서 가장 위험한 실수는 Slack·Claude 호출의 `await` 누락이다. 이를 잡는 `no-floating-promises`는 타입 정보가 있어야 동작한다
+3. 개발 실행은 tsx(esbuild)가 담당하므로 컴파일러 속도 차이가 개발 체감에 영향이 없다. 코드 규모상 `tsc` 시간도 몇 초 수준이다
+
+**포기한 것**
+- TypeScript 7.0의 빌드·타입 검사 속도 향상
+- typescript-eslint가 7.x를 지원하면 다시 올려야 한다 (그때 새 ADR로 기록한다)
