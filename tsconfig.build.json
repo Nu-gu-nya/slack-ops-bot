@@ -1,0 +1,6 @@
+{
+  // Production build only: tests are type-checked by `npm run typecheck`
+  // but have no reason to ship in dist/ or the Docker image.
+  "extends": "./tsconfig.json",
+  "exclude": ["src/**/*.spec.ts"]
+}
