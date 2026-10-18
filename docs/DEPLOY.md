@@ -52,7 +52,7 @@ ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/bot/app.js"]
 ```
 
 DB가 없으므로 `docker-compose.yml`은 필수가 아니다. 로컬 개발은 `npm run dev`로 충분하고,
@@ -152,13 +152,15 @@ DB가 없어 전통적인 "헬스체크 엔드포인트"는 의미가 없다. �
 - **스케줄러 실행 로그**: 매일 08:50 실행이 실제로 발동했는지, 몇 명을 멘션했는지 로그로 남긴다
 - **에러 트래킹**: Sentry 무료 티어로 예외를 자동 수집 (선택 사항, 여유 있으면 추가)
 
-```typescript
-cron.schedule('50 8 * * 1-5', async () => {
-  console.log(`[attendance] 실행 시작 ${new Date().toISOString()}`);
-  const result = await runAttendanceCheck();
-  console.log(`[attendance] 완료 - 대상자 ${result.count}명, 실패 ${result.failed}건`);
-}, { timezone: 'Asia/Seoul' });
+현재 남기는 로그는 다음과 같다.
+
 ```
+[scheduler] attendance-check scheduled: "50 8 * * 1-5" (Asia/Seoul)   ← 기동 시
+[attendance] run finished: { announcedDepartments: [...], failedDepartments: [...], skippedReason: null }
+[report] report from U…: { delivered: true, usedFallback: false }
+```
+
+실패 경로는 로그와 별개로 관리자 채널에도 알림이 가므로, 로그를 보지 않아도 실패를 놓치지 않는다.
 
 단순히 "떠 있다"만 확인하면 의미가 없다. **의도한 일이 실제로 일어났는지까지 로그로 남겨야 진짜 관측이다.**
 
@@ -175,11 +177,13 @@ cron.schedule('50 8 * * 1-5', async () => {
 # .env.example
 SLACK_BOT_TOKEN=
 SLACK_APP_TOKEN=
-SLACK_SIGNING_SECRET=
+ADMIN_CHANNEL_ID=
+REPORT_CHANNEL_ID=
 GOOGLE_SERVICE_ACCOUNT_EMAIL=
 GOOGLE_PRIVATE_KEY=
 GOOGLE_SHEET_ID=
 ANTHROPIC_API_KEY=
+# ATTENDANCE_CRON=   (선택)
 ```
 
 `GOOGLE_PRIVATE_KEY`는 개행 문자가 포함되어 있어 `.env`에 그대로 넣으면 깨지기 쉽다.
