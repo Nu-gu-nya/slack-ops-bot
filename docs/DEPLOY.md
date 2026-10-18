@@ -64,33 +64,16 @@ Docker는 배포 이미지 통일 용도로만 쓴다.
 
 ## CI — GitHub Actions
 
-`.github/workflows/ci.yml`
+설정은 [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)에 있다. `main` 대상 PR과 `main` 푸시에서 실행된다.
 
-```yaml
-name: CI
-
-on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
-
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run build
 ```
+npm ci  →  lint  →  typecheck  →  test  →  build
+```
+
+- Node 22 (로컬 개발과 같은 메이저 버전), npm 캐시 사용
+- 같은 브랜치에 새 푸시가 오면 이전 실행은 취소한다 (`concurrency`)
+- 토큰 권한은 `contents: read`만 준다. CI는 저장소를 읽기만 하면 된다
+- 외부 API를 호출하는 테스트가 없으므로 CI에는 비밀값이 하나도 필요 없다
 
 이 워크플로가 통과해야만 병합되도록 브랜치 보호 규칙을 건다. [CONTRIBUTING.md](../CONTRIBUTING.md) 참고.
 
