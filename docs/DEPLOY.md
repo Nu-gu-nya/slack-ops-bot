@@ -126,7 +126,7 @@ jobs:
 
 CI 결과와 배포 결과도 Slack 채널로 보낸다. 개인 테스트 워크스페이스의
 `#ci-alerts`, `#deploy` 채널을 쓰면 되고, 이건 봇이 사용자에게 제공하는 기능이 아니라
-**개발 프로세스를 관리하는 용도**다. 자세한 채널 구성은 [TEAM.md](TEAM.md) 참고.
+**개발 프로세스를 관리하는 용도**다.
 
 ```yaml
       - name: Notify Slack on failure

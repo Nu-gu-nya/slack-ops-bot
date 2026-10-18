@@ -121,7 +121,6 @@ https://api.slack.com/apps の **Create New App → From a manifest** に貼り�
 | 3 | [CONTRIBUTING.md](CONTRIBUTING.md) | ブランチ・コミット・PR・レビューの規約 |
 | 4 | [QA.md](docs/QA.md) | テスト方針とチェックリスト |
 | 5 | [DEPLOY.md](docs/DEPLOY.md) | CI/CD、デプロイ、通知 |
-| — | [TEAM.md](docs/TEAM.md) | 一人でチーム開発のプロセスを回す方法 |
 | — | [DECISIONS.md](docs/DECISIONS.md) | 技術選定の記録(ADR) |
 
 > このプロジェクトに Web 画面はありません。[UIUX.md](docs/UIUX.md) では画面の UX ではなく、

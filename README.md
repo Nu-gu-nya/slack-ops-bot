@@ -121,7 +121,6 @@ Slack 앱은 [`slack-app-manifest.yml`](slack-app-manifest.yml)을 https://api.s
 | 3 | [CONTRIBUTING.md](CONTRIBUTING.md) | 브랜치·커밋·PR·코드 리뷰 규칙 |
 | 4 | [QA.md](docs/QA.md) | 테스트 전략과 체크리스트 |
 | 5 | [DEPLOY.md](docs/DEPLOY.md) | CI/CD, 배포, 알림 |
-| — | [TEAM.md](docs/TEAM.md) | 혼자서 팀 프로세스 굴리는 법 |
 | — | [DECISIONS.md](docs/DECISIONS.md) | 기술 선택 기록 (ADR) |
 
 > 이 프로젝트엔 웹 화면이 없다. [UIUX.md](docs/UIUX.md)는 "화면 UX" 대신
