@@ -51,7 +51,8 @@
 | ✅ | ボット B — `/report` 入力モーダルと項目ごとの検証、Claude による要約、失敗時の原文フォールバック |
 | ✅ | 失敗通知 — シートエラー・該当者なし・Slack ID 未入力・送信失敗を管理者チャンネルへ通知 |
 | ✅ | ユニットテスト 37 件(対象者の抽出、行の変換、出勤確認の照合、要約のフォールバックなど) |
-| 🚧 | ESLint、CI、デプロイ |
+| ✅ | ESLint(型情報を使うルールを含む) |
+| 🚧 | CI、デプロイ |
 
 機能一覧を「予定」ではなく、**実際に動作しているかどうか**で分けて記載しています。
 
@@ -65,7 +66,7 @@
 | 要約 | Claude API (Anthropic SDK) |
 | スケジューリング | node-cron(Bolt と同一プロセス。Socket Mode のため別サーバー不要) |
 | テスト | node:test(Node 標準のテストランナー。外部 API はインターフェースで分離し、テスト用の実装を注入) |
-| 品質 | TypeScript strict、ESLint(CI とあわせて導入予定) |
+| 品質 | TypeScript strict、ESLint + typescript-eslint(型情報を使うルール: `no-floating-promises`, `no-explicit-any`) |
 | CI/CD | GitHub Actions |
 
 構成と各ボットの動作の詳細は [ARCHITECTURE.md](docs/ARCHITECTURE.md)、
@@ -103,6 +104,7 @@ https://api.slack.com/apps の **Create New App → From a manifest** に貼り�
 |---|---|
 | `npm run dev` | 開発実行(`.env` を読み込み Socket Mode で接続) |
 | `npm test` | ユニットテスト |
+| `npm run lint` | ESLint |
 | `npm run typecheck` | 型チェック |
 | `npm run build && npm start` | ビルド後に実行 |
 

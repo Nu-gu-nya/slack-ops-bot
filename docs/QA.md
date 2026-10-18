@@ -31,7 +31,7 @@
 `any` 금지, `await` 누락 금지를 ESLint로 강제한다.
 
 ```js
-// eslint.config.js
+// eslint.config.mjs
 rules: {
   '@typescript-eslint/no-explicit-any': 'error',
   '@typescript-eslint/no-floating-promises': 'error',
