@@ -14,7 +14,7 @@
 
 > 외부 API가 하나만 얽혀도 "정상 응답"만 처리하면 절반짜리다.
 > 세 개의 외부 서비스를 엮으면서 각각의 실패를 어떻게 다루는지가
-> 이 프로젝트에서 설명할 수 있어야 하는 부분이다.
+> 이 프로젝트의 핵심이다.
 
 ## 기능 범위
 
@@ -41,16 +41,17 @@
 
 ## 현재 진행 상황
 
-개발 중인 프로젝트다. 지금까지 실제로 동작하는 범위는 아래와 같다.
+두 봇의 P0 기능이 모두 구현되어 테스트 워크스페이스와 실제 시트로 동작을 확인했다.
 
 | 상태 | 항목 |
 |---|---|
 | ✅ | 기획·구조 설계 문서 (요구사항, 아키텍처, ADR, QA 전략) |
 | ✅ | Slack 앱 구성 (Socket Mode, 매니페스트를 저장소에 코드로 관리) |
-| ✅ | Bolt 앱 기동 + 환경 변수 검증(fail fast) + `/report` 커맨드 응답 |
-| 🚧 | A봇 — Google Sheets 연동, 근무 대상자 필터링, 멘션 발송, 스케줄링 |
-| 🚧 | B봇 — 보고 수집 모달, Claude 요약, 실패 시 원문 폴백 |
-| 🚧 | 테스트, CI, 배포 |
+| ✅ | A봇 — 시트 조회, 근무 대상자 필터링, 부서별 멘션, 평일 08:50 스케줄, 스레드 답글 출근 확인 |
+| ✅ | B봇 — `/report` 입력 모달과 필드별 검증, Claude 요약, 실패 시 원문 폴백 |
+| ✅ | 실패 알림 — 시트 오류·빈 결과·Slack ID 누락·발송 실패를 관리자 채널로 통지 |
+| ✅ | 단위 테스트 37개 (대상자 필터링, 행 매핑, 출근 확인 매칭, 요약 폴백 등) |
+| 🚧 | ESLint, CI, 배포 |
 
 기능 목록을 "예정"이 아니라 **실제 동작 여부로** 구분해 적는다.
 
@@ -63,7 +64,8 @@
 | 근태 데이터 | Google Sheets API |
 | 요약 | Claude API (Anthropic SDK) |
 | 스케줄링 | node-cron (Bolt 프로세스 내 실행, Socket Mode라 별도 서버 불필요) |
-| 품질 | ESLint, Prettier |
+| 테스트 | node:test (Node 내장 러너, 외부 API는 인터페이스로 분리해 가짜 구현 주입) |
+| 품질 | TypeScript strict, ESLint(CI와 함께 도입 예정) |
 | CI/CD | GitHub Actions |
 
 세부 구조와 각 봇의 실행 방식은 [ARCHITECTURE.md](docs/ARCHITECTURE.md)에서 다룬다.
@@ -90,7 +92,8 @@ Copy-Item .env.example .env   # 발급받은 토큰을 채워넣는다
 npm run dev
 ```
 
-`⚡ Ops Bot 실행 중 (Socket Mode)`이 출력되면 봇이 초대된 채널에서 `/report`로 확인할 수 있다.
+`⚡ Ops Bot is running (Socket Mode)`가 출력되면 봇이 초대된 채널에서 `/report`로 확인할 수 있다.
+부서별 채널은 `src/config/departments.ts`에서 지정한다.
 
 Slack 앱은 [`slack-app-manifest.yml`](slack-app-manifest.yml)을 https://api.slack.com/apps 의
 **Create New App → From a manifest**에 붙여넣어 생성한다. 필요한 스코프와 이벤트 구독이
@@ -99,6 +102,7 @@ Slack 앱은 [`slack-app-manifest.yml`](slack-app-manifest.yml)을 https://api.s
 | 명령어 | 용도 |
 |---|---|
 | `npm run dev` | 개발 실행 (`.env`를 읽어 Socket Mode로 접속) |
+| `npm test` | 단위 테스트 |
 | `npm run typecheck` | 타입 검사 |
 | `npm run build && npm start` | 프로덕션 빌드 후 실행 |
 
@@ -131,5 +135,5 @@ README는 한국어와 일본어로 제공한다.
 
 ## 일정
 
-MVP(P0) 완성을 목표로 진행 중이다. 일별 목표와 범위 조정 기준은
+P0 구현은 끝났고, 남은 일은 ESLint·CI·배포다. 일별 목표와 범위 조정 기준은
 [ROADMAP.md](docs/ROADMAP.md)에 정리되어 있다.
