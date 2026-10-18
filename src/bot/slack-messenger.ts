@@ -1,6 +1,6 @@
 import type { webApi } from '@slack/bolt';
 
-import type { Messenger } from '../services/attendance-check.service.js';
+import type { Messenger } from '../services/messenger.js';
 
 export function createSlackMessenger(client: webApi.WebClient, adminChannelId: string): Messenger {
   return {

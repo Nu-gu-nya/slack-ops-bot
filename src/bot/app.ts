@@ -5,14 +5,13 @@ import { env } from '../config/env.js';
 import { runAttendanceCheck } from '../services/attendance-check.service.js';
 import { CheckinStore } from '../services/checkin.service.js';
 import { createSheetsReader } from '../services/sheets.service.js';
+import { createClaudeSummarizer } from '../services/summarize.service.js';
 import { todayInSeoul } from '../services/time.js';
 import { registerCheckinHandler } from './handlers/checkin.thread.js';
+import { registerReportCommand } from './handlers/report.command.js';
+import { registerReportSubmit } from './handlers/report.submit.js';
 import { scheduleDaily } from './scheduler.js';
 import { createSlackMessenger } from './slack-messenger.js';
-
-// Must match the command in slack-app-manifest.yml. A mismatch fails silently
-// (Slack simply never delivers the command), so it is kept as a single constant.
-const REPORT_COMMAND = '/report';
 
 const app = new App({
   token: env.slackBotToken,
@@ -20,6 +19,9 @@ const app = new App({
   socketMode: true,
 });
 
+const messenger = createSlackMessenger(app.client, env.adminChannelId);
+
+// Bot A — attendance announcement and thread check-in
 const checkins = new CheckinStore();
 const attendanceDeps = {
   reader: createSheetsReader({
@@ -28,18 +30,18 @@ const attendanceDeps = {
     spreadsheetId: env.googleSheetId,
     range: ATTENDANCE_SHEET_RANGE,
   }),
-  messenger: createSlackMessenger(app.client, env.adminChannelId),
+  messenger,
   checkins,
   departmentChannels: DEPARTMENT_CHANNELS,
 };
-
 registerCheckinHandler(app, checkins);
 
-app.command(REPORT_COMMAND, async ({ ack, respond }) => {
-  // Slack shows a failure if it gets no ack within 3 seconds, so acknowledge first.
-  await ack();
-
-  await respond('업무 보고 기능은 아직 준비 중입니다.');
+// Bot B — /report modal and summarised digest
+registerReportCommand(app);
+registerReportSubmit(app, {
+  summarizer: createClaudeSummarizer(env.anthropicApiKey),
+  messenger,
+  reportChannelId: env.reportChannelId,
 });
 
 async function main(): Promise<void> {

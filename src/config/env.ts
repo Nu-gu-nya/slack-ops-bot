@@ -37,4 +37,7 @@ export const env = {
   googleSheetId: requireEnv('GOOGLE_SHEET_ID'),
 
   attendanceCron: optionalEnv('ATTENDANCE_CRON', DEFAULT_ATTENDANCE_CRON),
+
+  anthropicApiKey: requireEnv('ANTHROPIC_API_KEY'),
+  reportChannelId: requireEnv('REPORT_CHANNEL_ID'),
 };

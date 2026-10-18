@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { runAttendanceCheck, type AttendanceCheckDeps, type Messenger } from './attendance-check.service.js';
+import { runAttendanceCheck, type AttendanceCheckDeps } from './attendance-check.service.js';
+import type { Messenger } from './messenger.js';
 import { CheckinStore } from './checkin.service.js';
 
 const TODAY = '2026-09-14';

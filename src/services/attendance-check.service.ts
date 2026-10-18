@@ -6,15 +6,9 @@ import {
 } from './attendance.service.js';
 import type { CheckinStore } from './checkin.service.js';
 import * as messages from './messages.js';
+import type { Messenger } from './messenger.js';
 import { errorMessage, withOneRetry } from './retry.js';
 import type { AttendanceSheetReader } from './sheets.service.js';
-
-/** Slack operations the run needs. Abstracted so the run is testable without Slack. */
-export interface Messenger {
-  /** Returns the posted message's ts, which identifies its thread. */
-  post(channel: string, text: string): Promise<string>;
-  notifyAdmin(text: string): Promise<void>;
-}
 
 export interface AttendanceCheckDeps {
   reader: AttendanceSheetReader;
