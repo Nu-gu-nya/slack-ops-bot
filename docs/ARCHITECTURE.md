@@ -71,7 +71,7 @@ export type AttendanceStatus = (typeof ATTENDANCE_STATUS)[number];
 
 export interface AttendanceRecord {
   date: string;            // 'YYYY-MM-DD'
-  department: string;      // '27기 인턴', 'PD', 'CS' 등
+  department: string;      // '개발', 'CS' 등. 시트의 부서 열 값 그대로
   name: string;
   slackUserId: string;     // 멘션에 반드시 필요. 시트의 별도 열에서 채운다
   status: AttendanceStatus;
@@ -191,4 +191,4 @@ ANTHROPIC_API_KEY=
 | 다중 워크스페이스 지원 | 단일 조직 사용 전제. Socket Mode는 애초에 이런 확장에 안 맞음 |
 | 확인 상태의 시트 back-write | 쓰기 동시성까지 다루기엔 시간 대비 이득이 작음 (P1로 남김) |
 
-**"안 한 것"과 "못 한 것"을 구분해서 설명할 수 있어야 한다.**
+위 항목은 전부 일정이 아니라 범위 판단으로 제외한 것이다.

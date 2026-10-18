@@ -14,7 +14,7 @@
 
 > 外部 API がひとつ絡むだけでも、「正常なレスポンス」だけを処理していては不十分です。
 > 3つの外部サービスをつなぐ中で、それぞれの失敗をどう扱うか。
-> そこを自分の言葉で説明できることが、このプロジェクトの目標です。
+> それがこのプロジェクトの中心です。
 
 ## 機能範囲
 
@@ -41,16 +41,17 @@
 
 ## 現在の進捗
 
-開発中のプロジェクトです。実際に動作する範囲は以下のとおりです。
+両ボットの P0 機能を実装し、テスト用ワークスペースと実際のスプレッドシートで動作を確認しています。
 
 | 状態 | 項目 |
 |---|---|
 | ✅ | 企画・設計ドキュメント(要件定義、アーキテクチャ、ADR、QA 方針) |
 | ✅ | Slack アプリ構成(Socket Mode、マニフェストをリポジトリ内でコードとして管理) |
-| ✅ | Bolt アプリの起動、環境変数の検証(fail fast)、`/report` コマンドへの応答 |
-| 🚧 | ボット A — Google Sheets 連携、勤務対象者の抽出、メンション送信、スケジューリング |
-| 🚧 | ボット B — 報告入力モーダル、Claude による要約、失敗時の原文フォールバック |
-| 🚧 | テスト、CI、デプロイ |
+| ✅ | ボット A — シート参照、勤務対象者の抽出、部署別メンション、平日 8:50 の定時実行、スレッド返信による出勤確認 |
+| ✅ | ボット B — `/report` 入力モーダルと項目ごとの検証、Claude による要約、失敗時の原文フォールバック |
+| ✅ | 失敗通知 — シートエラー・該当者なし・Slack ID 未入力・送信失敗を管理者チャンネルへ通知 |
+| ✅ | ユニットテスト 37 件(対象者の抽出、行の変換、出勤確認の照合、要約のフォールバックなど) |
+| 🚧 | ESLint、CI、デプロイ |
 
 機能一覧を「予定」ではなく、**実際に動作しているかどうか**で分けて記載しています。
 
@@ -63,7 +64,8 @@
 | 勤怠データ | Google Sheets API |
 | 要約 | Claude API (Anthropic SDK) |
 | スケジューリング | node-cron(Bolt と同一プロセス。Socket Mode のため別サーバー不要) |
-| 品質 | ESLint, Prettier |
+| テスト | node:test(Node 標準のテストランナー。外部 API はインターフェースで分離し、テスト用の実装を注入) |
+| 品質 | TypeScript strict、ESLint(CI とあわせて導入予定) |
 | CI/CD | GitHub Actions |
 
 構成と各ボットの動作の詳細は [ARCHITECTURE.md](docs/ARCHITECTURE.md)、
@@ -90,7 +92,8 @@ Copy-Item .env.example .env   # 取得したトークンを記入する
 npm run dev
 ```
 
-起動ログが表示されたら、ボットを招待したチャンネルで `/report` を実行して動作を確認できます。
+`⚡ Ops Bot is running (Socket Mode)` と表示されたら、ボットを招待したチャンネルで `/report` を実行して動作を確認できます。
+部署ごとのチャンネルは `src/config/departments.ts` で指定します。
 
 Slack アプリは [`slack-app-manifest.yml`](slack-app-manifest.yml) を
 https://api.slack.com/apps の **Create New App → From a manifest** に貼り付けて作成します。
@@ -99,6 +102,7 @@ https://api.slack.com/apps の **Create New App → From a manifest** に貼り�
 | コマンド | 用途 |
 |---|---|
 | `npm run dev` | 開発実行(`.env` を読み込み Socket Mode で接続) |
+| `npm test` | ユニットテスト |
 | `npm run typecheck` | 型チェック |
 | `npm run build && npm start` | ビルド後に実行 |
 
@@ -117,7 +121,6 @@ https://api.slack.com/apps の **Create New App → From a manifest** に貼り�
 | 3 | [CONTRIBUTING.md](CONTRIBUTING.md) | ブランチ・コミット・PR・レビューの規約 |
 | 4 | [QA.md](docs/QA.md) | テスト方針とチェックリスト |
 | 5 | [DEPLOY.md](docs/DEPLOY.md) | CI/CD、デプロイ、通知 |
-| — | [TEAM.md](docs/TEAM.md) | 一人でチーム開発のプロセスを回す方法 |
 | — | [DECISIONS.md](docs/DECISIONS.md) | 技術選定の記録(ADR) |
 
 > このプロジェクトに Web 画面はありません。[UIUX.md](docs/UIUX.md) では画面の UX ではなく、
